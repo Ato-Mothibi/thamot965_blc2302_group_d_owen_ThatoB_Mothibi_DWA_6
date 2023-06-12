@@ -57,12 +57,12 @@ function closePreview(){
 closePreview()
 
 
-// /**
-//  * Creates option elements for a dropdown menu.
-//  * @param {string} container - The dropdown container.
-//  * @param {string} defaultValue - The default value of the dropdown.
-//  * @param {Object} options - The options for the dropdown.
-//  */
+// // /**
+// //  * Creates option elements for a dropdown menu.
+// //  * @param {string} container - The dropdown container.
+// //  * @param {string} defaultValue - The default value of the dropdown.
+// //  * @param {Object} options - The options for the dropdown.
+// //  */
 // function generateOptions(data, defaultOptionText) {
 //     const fragment = document.createDocumentFragment();
 //     const defaultOption = document.createElement('option');
@@ -132,12 +132,47 @@ function populateAuthors() {
  * Sets the theme of the application.
  * @param {string} theme - The theme to set ('day' or 'night').
  */
-function setTheme(theme) {
-    const isDarkMode = theme === 'night';
-    document.querySelector('[data-settings-theme]').value = theme;
-    document.documentElement.style.setProperty('--color-dark', isDarkMode ? '255, 255, 255' : '10, 10, 20');
-    document.documentElement.style.setProperty('--color-light', isDarkMode ? '10, 10, 20' : '255, 255, 255');
+// function setTheme(theme) {
+//     const isDarkMode = theme === 'night';
+//     document.querySelector('[data-settings-theme]').value = theme;
+//     document.documentElement.style.setProperty('--color-dark', isDarkMode ? '255, 255, 255' : '10, 10, 20');
+//     document.documentElement.style.setProperty('--color-light', isDarkMode ? '10, 10, 20' : '255, 255, 255');
+// }
+
+function setThemeColors(theme) {
+    if (theme === 'night') {
+      document.documentElement.style.setProperty('--color-dark', '255, 255, 255');
+      document.documentElement.style.setProperty('--color-light', '10, 10, 20');
+    } else {
+      document.documentElement.style.setProperty('--color-dark', '10, 10, 20');
+      document.documentElement.style.setProperty('--color-light', '255, 255, 255');
+    }
+  }
+
+
+// Calls the setThemeColors
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.querySelector('[data-settings-theme]').value = 'night';
+    setThemeColors('night');
+  } else {
+    document.querySelector('[data-settings-theme]').value = 'day';
+    setThemeColors('day');
+  }
+
+
+
+/**
+ * Sets the settings form event listener.
+ */
+function setSettingsForm(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const { theme } = Object.fromEntries(formData);
+    setThemeColors(theme);
+    document.querySelector('[data-settings-overlay]').open = false;
 }
+document.querySelector('[data-settings-form]').addEventListener('submit', setSettingsForm)
+
 /**
  * Sets the search cancel button event listener.
  */
@@ -150,10 +185,9 @@ function setSearchCancelButton() {
  * Sets the settings cancel button event listener.
  */
 function setSettingsCancelButton() {
-    document.querySelector('[data-settings-cancel]').addEventListener('click', () => {
         document.querySelector('[data-settings-overlay]').open = false;
-    });
-}
+    }
+    document.querySelector('[data-settings-cancel]').addEventListener('click', setSettingsCancelButton)
 
 
 /**
@@ -172,17 +206,8 @@ function setSettingsButton() {
         document.querySelector('[data-settings-overlay]').open = true;
 }
 document.querySelector('[data-header-settings]').addEventListener('click', setSettingsButton) 
-/**
- * Sets the settings form event listener.
- */
-function setSettingsForm(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const { theme } = Object.fromEntries(formData);
-        setTheme(theme);
-        document.querySelector('[data-settings-overlay]').open = false;
-}
-    document.querySelector('[data-settings-form]').addEventListener('submit', setSettingsForm)
+
+
 /**
  * Sets the search form event listener.
  */
@@ -305,7 +330,7 @@ function initializeApp() {
     setListButton();
     setSearchCancelButton();
     setSettingsCancelButton();
-    setSearchButton();
+    handleSearchButton();
     setSettingsButton();
     setSettingsForm();
     setSearchForm();
