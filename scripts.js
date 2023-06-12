@@ -159,32 +159,30 @@ function setSettingsCancelButton() {
 /**
  * Sets the search button event listener.
  */
-function setSearchButton() {
-    document.querySelector('[data-header-search]').addEventListener('click', () => {
-        document.querySelector('[data-search-overlay]').open = true;
-        document.querySelector('[data-search-title]').focus();
-    });
+function handleSearchButton() {
+    document.querySelector('[data-search-overlay]').open = true;
+    document.querySelector('[data-search-title]').focus();
 }
+
+document.querySelector('[data-header-search]').addEventListener('click', handleSearchButton)
 /**
  * Sets the settings button event listener.
  */
 function setSettingsButton() {
-    document.querySelector('[data-header-settings]').addEventListener('click', () => {
         document.querySelector('[data-settings-overlay]').open = true;
-    });
 }
+document.querySelector('[data-header-settings]').addEventListener('click', setSettingsButton) 
 /**
  * Sets the settings form event listener.
  */
-function setSettingsForm() {
-    document.querySelector('[data-settings-form]').addEventListener('submit', (event) => {
+function setSettingsForm(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
         const { theme } = Object.fromEntries(formData);
         setTheme(theme);
         document.querySelector('[data-settings-overlay]').open = false;
-    });
 }
+    document.querySelector('[data-settings-form]').addEventListener('submit', setSettingsForm)
 /**
  * Sets the search form event listener.
  */
