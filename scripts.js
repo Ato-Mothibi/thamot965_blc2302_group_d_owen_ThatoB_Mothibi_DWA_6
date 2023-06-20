@@ -44,53 +44,12 @@ function populatePreviewItems(startIndex, endIndex) {
     }
     return fragment;
 }
-
-
-/**
- * Closes the preview
- */
 function closePreview(){
     document.querySelector('[data-list-close]').addEventListener('click', () => {
         document.querySelector('[data-list-active]').open = false
     })
 }
 closePreview()
-
-
-// // /**
-// //  * Creates option elements for a dropdown menu.
-// //  * @param {string} container - The dropdown container.
-// //  * @param {string} defaultValue - The default value of the dropdown.
-// //  * @param {Object} options - The options for the dropdown.
-// //  */
-// function generateOptions(data, defaultOptionText) {
-//     const fragment = document.createDocumentFragment();
-//     const defaultOption = document.createElement('option');
-//     defaultOption.value = 'any';
-//     defaultOption.innerText = defaultOptionText;
-//     fragment.appendChild(defaultOption);
- 
-//     for (const [id, name] of Object.entries(data)) {
-//       const option = document.createElement('option');
-//       option.value = id;
-//       option.innerText = name;
-//       fragment.appendChild(option);
-//     }
- 
-//     return fragment;
-//   }
-
-
-
-
-// // Generates genre and author options by using the generateOptions
-//   const genreHtml = generateOptions(genres, 'All Genres');
-//   const authorHtml = generateOptions(authors, 'All Authors');
- 
-//   document.querySelector('[data-search-genres]').appendChild(genreHtml);
-//   document.querySelector('[data-search-authors]').appendChild(authorHtml);
- 
-
 
 /**
  * Populates the genres select element.
@@ -128,50 +87,6 @@ function populateAuthors() {
     }
     return authorsHtml;
 }
-/**
- * Sets the theme of the application.
- * @param {string} theme - The theme to set ('day' or 'night').
- */
-// function setTheme(theme) {
-//     const isDarkMode = theme === 'night';
-//     document.querySelector('[data-settings-theme]').value = theme;
-//     document.documentElement.style.setProperty('--color-dark', isDarkMode ? '255, 255, 255' : '10, 10, 20');
-//     document.documentElement.style.setProperty('--color-light', isDarkMode ? '10, 10, 20' : '255, 255, 255');
-// }
-
-function setThemeColors(theme) {
-    if (theme === 'night') {
-      document.documentElement.style.setProperty('--color-dark', '255, 255, 255');
-      document.documentElement.style.setProperty('--color-light', '10, 10, 20');
-    } else {
-      document.documentElement.style.setProperty('--color-dark', '10, 10, 20');
-      document.documentElement.style.setProperty('--color-light', '255, 255, 255');
-    }
-  }
-
-
-// Calls the setThemeColors
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    document.querySelector('[data-settings-theme]').value = 'night';
-    setThemeColors('night');
-  } else {
-    document.querySelector('[data-settings-theme]').value = 'day';
-    setThemeColors('day');
-  }
-
-
-
-/**
- * Sets the settings form event listener.
- */
-function setSettingsForm(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const { theme } = Object.fromEntries(formData);
-    setThemeColors(theme);
-    document.querySelector('[data-settings-overlay]').open = false;
-}
-document.querySelector('[data-settings-form]').addEventListener('submit', setSettingsForm)
 
 /**
  * Sets the search cancel button event listener.
@@ -181,31 +96,16 @@ function setSearchCancelButton() {
         document.querySelector('[data-search-overlay]').open = false;
     });
 }
-/**
- * Sets the settings cancel button event listener.
- */
-function setSettingsCancelButton() {
-        document.querySelector('[data-settings-overlay]').open = false;
-    }
-    document.querySelector('[data-settings-cancel]').addEventListener('click', setSettingsCancelButton)
-
 
 /**
  * Sets the search button event listener.
  */
-function handleSearchButton() {
-    document.querySelector('[data-search-overlay]').open = true;
-    document.querySelector('[data-search-title]').focus();
+function setSearchButton() {
+    document.querySelector('[data-header-search]').addEventListener('click', () => {
+        document.querySelector('[data-search-overlay]').open = true;
+        document.querySelector('[data-search-title]').focus();
+    });
 }
-
-document.querySelector('[data-header-search]').addEventListener('click', handleSearchButton)
-/**
- * Sets the settings button event listener.
- */
-function setSettingsButton() {
-        document.querySelector('[data-settings-overlay]').open = true;
-}
-document.querySelector('[data-header-settings]').addEventListener('click', setSettingsButton) 
 
 
 /**
@@ -250,10 +150,47 @@ function setSearchForm() {
     });
 }
 
+/**
+ * Sets the theme of the application.
+ * @param {string} theme - The theme to set ('day' or 'night').
+ */
+function setTheme(theme) {
+    const isDarkMode = theme === 'night';
+    document.querySelector('[data-settings-theme]').value = theme;
+    document.documentElement.style.setProperty('--color-dark', isDarkMode ? '255, 255, 255' : '10, 10, 20');
+    document.documentElement.style.setProperty('--color-light', isDarkMode ? '10, 10, 20' : '255, 255, 255');
+}
 
 
+/**
+ * Sets the settings cancel button event listener.
+ */
+function setSettingsCancelButton() {
+    document.querySelector('[data-settings-cancel]').addEventListener('click', () => {
+        document.querySelector('[data-settings-overlay]').open = false;
+    });
+}
 
-
+/**
+ * Sets the settings button event listener.
+ */
+function setSettingsButton() {
+    document.querySelector('[data-header-settings]').addEventListener('click', () => {
+        document.querySelector('[data-settings-overlay]').open = true;
+    });
+}
+/**
+ * Sets the settings form event listener.
+ */
+function setSettingsForm() {
+    document.querySelector('[data-settings-form]').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const { theme } = Object.fromEntries(formData);
+        setTheme(theme);
+        document.querySelector('[data-settings-overlay]').open = false;
+    });
+}
 
 /**
  * Sets the list button event listener.
@@ -265,9 +202,6 @@ function setListButton() {
         const fragment = populatePreviewItems(startIndex, endIndex);
         document.querySelector('[data-list-items]').appendChild(fragment);
         page += 1;
-
-
-        updateListButtonRemaining()
     });
 }
 /**
@@ -308,10 +242,6 @@ function setListItemsClick() {
         }
     });
 }
-
-
-
-
 /**
  * Initializes the application.
  */
@@ -330,23 +260,10 @@ function initializeApp() {
     setListButton();
     setSearchCancelButton();
     setSettingsCancelButton();
-    handleSearchButton();
+    setSearchButton();
     setSettingsButton();
     setSettingsForm();
     setSearchForm();
     setListItemsClick();
 }
 initializeApp();
-
-
-
-
-
-
-
-
-
-
-
-
-
